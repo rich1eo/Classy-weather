@@ -10,11 +10,20 @@ function App() {
   const [weather, setWeather] = useState({});
 
   useEffect(() => {
-    if (location.length < 2) return setWeather({});
+    setLocation(localStorage.getItem('location') || '');
+  }, []);
+
+  useEffect(() => {
+    if (location.length <= 2) {
+      setWeather({});
+      localStorage.removeItem('location');
+      return;
+    }
 
     async function fetchWeather() {
       try {
         setIsLoading(true);
+        localStorage.setItem('location', location);
 
         // 1) Getting location (geocoding)
         const geoRes = await fetch(
